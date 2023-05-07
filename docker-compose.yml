@@ -4,5 +4,9 @@ services:
     image: "ghcr.io/remla23-team18/model-service:latest"
     ports:
       - 8080:8080
-    volumes:
-      - .:/root/app/
+  app:
+    depends_on:
+      - web
+    image: "ghcr.io/remla23-team18/app:latest"
+    ports:
+      - 3000:3000
