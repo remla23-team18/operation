@@ -80,15 +80,28 @@ kind: Ingress
 metadata:
   name: remla-ingress
 spec:
-  defaultBackend:
-    service:
-      name: remla-web-serv
-      port:
-        number: 8080
+  rules:
+    - host: localhost
+      http:
+        paths:
+          - path: /web
+            pathType: Prefix
+            backend:
+              service:
+                name: remla-web-serv
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: remla-app-serv
+                port:
+                  number: 3000
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: remla-config
 data:
-  server.host: "http://localhost:8080/"
+  server.host: "http://localhost/web"
