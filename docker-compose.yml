@@ -3,10 +3,12 @@ services:
   web:
     image: "ghcr.io/remla23-team18/model-service:latest"
     ports:
-      - 8080:8080
+      - 8000:8080
   app:
     depends_on:
       - web
     image: "ghcr.io/remla23-team18/app:latest"
     ports:
       - 3000:3000
+    environment:
+        - REACT_APP_MODEL_SERVICE_URL=http://localhost:8000/
