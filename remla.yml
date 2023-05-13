@@ -81,10 +81,9 @@ metadata:
   name: remla-ingress
 spec:
   rules:
-    - host: localhost
-      http:
+    - http:
         paths:
-          - path: /web
+          - path: /api/
             pathType: Prefix
             backend:
               service:
@@ -104,4 +103,4 @@ kind: ConfigMap
 metadata:
   name: remla-config
 data:
-  server.host: "http://localhost/web"
+  server.host: "http://localhost/api"
