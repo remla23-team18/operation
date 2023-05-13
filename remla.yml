@@ -83,14 +83,14 @@ spec:
   rules:
     - http:
         paths:
-          - path: /api/
+          - path: /
             pathType: Prefix
             backend:
               service:
                 name: remla-web-serv
                 port:
                   number: 8080
-          - path: /
+          - path: /app
             pathType: Prefix
             backend:
               service:
@@ -103,4 +103,4 @@ kind: ConfigMap
 metadata:
   name: remla-config
 data:
-  server.host: "http://localhost/api"
+  server.host: "http://localhost"
