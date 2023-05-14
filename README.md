@@ -48,7 +48,13 @@ If you want to test local changes yourself with locally built images, see below 
 
 ```bash
 kubectl apply -f remla.yml
-
+```
+or deploy with helm:
+```bash
+helm install remla ./remla_chart/  
+```
+apply the monitoring config:
+```bash
 kubectl apply -f monitoring.yml
 ```
 
