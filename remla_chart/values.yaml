@@ -1,0 +1,14 @@
+# values.yml
+web:
+  version: latest
+  port: 8080
+  targetPort: 8080
+  path: /
+  replicas: 1
+  url: "http://localhost"
+app:
+  version: latest
+  port: 3000
+  targetPort: 3000
+  path: /app
+  replicas: 1
