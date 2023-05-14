@@ -1,0 +1,110 @@
+# remla.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: remla-web-depl
+  labels:
+    app: remla-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: remla-web
+  template:
+    metadata:
+      labels:
+        app: remla-web
+    spec:
+      containers:
+      - name: remla-web
+#        image: ghcr.io/remla23-team18/model-service:latest
+        image: test_web_k8s
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: remla-web-serv
+  labels:
+    app: metrics-remla-web
+spec:
+  selector:
+    app: remla-web
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: remla-app-depl
+  labels:
+    app: remla-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: remla-app
+  template:
+    metadata:
+      labels:
+        app: remla-app
+    spec:
+      containers:
+      - name: remla-app
+#        image: ghcr.io/remla23-team18/app:latest
+        image: test_app_k8s
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3000
+        env:
+          - name: REACT_APP_MODEL_SERVICE_URL
+            valueFrom:
+              configMapKeyRef:
+                name: remla-config
+                key: server.host
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: remla-app-serv
+  labels:
+    app: metrics-remla-app
+spec:
+  selector:
+    app: remla-app
+  ports:
+    - port: 3000
+      targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: remla-ingress
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: remla-web-serv
+                port:
+                  number: 8080
+          - path: /app
+            pathType: Prefix
+            backend:
+              service:
+                name: remla-app-serv
+                port:
+                  number: 3000
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: remla-config
+data:
+  server.host: "http://localhost"
