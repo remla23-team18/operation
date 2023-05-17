@@ -59,6 +59,13 @@ Access the Prometheus page:
 minikube service myprom-kube-prometheus-sta-prometheus --url
 ```
 
+Access the Grafana page:
+```bash
+minikube service myprom-grafana --url
+```
+
+Add the Grafana dashboard by importing the json file `dashboard_setup.json` in the dashboard.
+
 After running `minikube tunnel` in another terminal, you can access the front end page using this link:
 ```bash
 localhost/app
