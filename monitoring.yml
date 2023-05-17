@@ -1,0 +1,13 @@
+# monitoring.yml for prometheus
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mymonitor
+  labels:
+    release: myprom
+spec:
+  selector:
+    matchLabels:
+      app: remla-metrics
+  endpoints:
+  - interval: 1s

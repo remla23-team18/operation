@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-depl
+  labels:
+    app: web
+spec:
+  replicas: {{.Values.web.replicas}}
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: ghcr.io/remla23-team18/model-service:{{.Values.web.version}}
+        ports:
+        - containerPort: {{.Values.web.port}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-depl
+  labels:
+    app: app
+spec:
+  replicas: {{.Values.app.replicas}}
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app
+        image: ghcr.io/remla23-team18/app:{{.Values.app.version}}
+        ports:
+        - containerPort: {{.Values.app.port}}
+        env:
+          - name: REACT_APP_MODEL_SERVICE_URL
+            valueFrom:
+              configMapKeyRef:
+                name: config
+                key: server.host
