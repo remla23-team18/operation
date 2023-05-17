@@ -53,22 +53,18 @@ or deploy with helm:
 ```bash
 helm install remla ./remla_chart/  
 ```
-apply the monitoring config:
-```bash
-kubectl apply -f monitoring.yml
-```
 
 Access the Prometheus page:
 ```bash
 minikube service myprom-kube-prometheus-sta-prometheus --url
 ```
 
-Access the front end page using this link:
+After running `minikube tunnel` in another terminal, you can access the front end page using this link:
 ```bash
 localhost/app
 ```
 
-Access the Prometheus metrics using this link:
+Access the metrics served to Prometheus using this link:
 ```bash
 localhost/metrics
 ```
