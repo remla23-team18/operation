@@ -64,6 +64,8 @@ Access the Grafana page:
 minikube service myprom-grafana --url
 ```
 
+The default username and password for Grafana is `admin` and `prom-operator`.
+
 Add the Grafana dashboard by importing the json file `dashboard_setup.json` in the dashboard.
 
 After running `minikube tunnel` in another terminal, you can access the front end page using this link:
