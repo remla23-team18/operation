@@ -8,8 +8,8 @@ web:
   replicas: 1
   url: "http://localhost"
 app:
-  version1: latest
-  version2: latest
+  version1: 0.0.5
+  version2: 0.0.6
   port: 3000
   targetPort: 3000
   path: /app
