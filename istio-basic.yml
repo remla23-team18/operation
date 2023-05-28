@@ -65,7 +65,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: app-serv
+  name: app-serv-destination-rule
 spec:
   host: app-serv
   subsets:
@@ -80,7 +80,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: web-serv
+  name: web-serv-destination-rule
 spec:
   host: web-serv
   subsets:
@@ -91,26 +91,26 @@ spec:
     labels:
       version: v2
 ---
-# Fix Subsequent Calls
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: web-serv
-spec:
-  hosts:
-  - web-serv
-  http:
-  - match:
-    - sourceLabels:
-        version: v2
-    route:
-    - destination:
-        host: web-serv
-        subset: v2
-  - route:
-    - destination:
-        host: web-serv
-        subset: v1
+## Fix Subsequent Calls
+#apiVersion: networking.istio.io/v1alpha3
+#kind: VirtualService
+#metadata:
+#  name: web-serv
+#spec:
+#  hosts:
+#  - web-serv
+#  http:
+#  - match:
+#    - sourceLabels:
+#        version: v2
+#    route:
+#    - destination:
+#        host: web-serv
+#        subset: v2
+#  - route:
+#    - destination:
+#        host: web-serv
+#        subset: v1
 
 # Excellent groups will extend the example and stablize the subset of requests, that are redirected to the
 # new service, i.e., once selected, I would only see the new version. If not, I would only see the old version.
