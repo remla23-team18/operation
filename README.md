@@ -1,8 +1,16 @@
 # Operation
 
-Contains the files to orchestrate the entire restaurant review app--including the model service and frontend application. Currently this is just a `docker compose`-based setup. Later on `kubernetes` will be used as well.
+Contains the files to orchestrate the entire restaurant review app--including the model service and frontend application.
 
-## Assignment 1
+[Assignment 1](#a1)
+
+[Assignment 2](#a2)
+
+[Assignment 3](#a3)
+
+
+
+## Assignment 1 <a name="a1"></a>
 
 ### Running
 
@@ -30,7 +38,7 @@ In case you would like to update the versions of images that the `compose` setup
 docker compose pull
 ```
 
-## Assignment 2
+## Assignment 2 <a name="a2"></a>
 Install the prometheus stack using the following command:
 ```bash
 helm repo add prom-repo https://prometheus-community.github.io/helm-charts
@@ -114,6 +122,50 @@ kubectl apply -f monitoring.yml
 Reference link: https://medium.com/swlh/how-to-run-locally-built-docker-images-in-kubernetes-b28fbc32cc1d 
 
 
+## Assignment 3 <a name="a3"></a>
+
+Set up your minikube cluster:
+```bash
+minikube start --memory=16384 --cpus=4
+
+minikube addons enable ingress
+
+minikube tunnel
+```
+
+Set up the istio service mesh:
+```bash
+istioctl install
+
+kubectl label ns default istio-injection=enabled
+
+kubectl apply -f istio_addon/.
+
+helm install remla remla_chart/
+
+kubectl apply -f istio-basic.yml
+```
+
+You can run `istioctl analyze` to check if there is any problem with the configuration.
+
+In the current version, the different versions of `app` and `model-service` should be alternating.
+The green button is `version1` and the orange button is `version2`. 
+
+Access the Prometheus and Kiali page:
+```bash
+istioctl dashboard prometheus
+
+istioctl dashboard kiali
+```
+
+In the prometheus page, you should be able to query the app-specific metrics, and use PromQL to aggregate and filter the metrics.
+For example, you can use the following commands:
+
+```bash
+sum by (version) (total_accuracy)
+
+sum by (version) (text_length_bucket)
+```
 
 ## Code structure
 
