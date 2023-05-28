@@ -1,26 +1,10 @@
-
 # Istio Additional Use Case
-
 # Rate Limiting: The service is automatically throttled for users that use it excessively.
-# users that send more than 10 requests per minute get temporarily blocked.
 
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: ratelimit-config
-data:
-  config.yaml: |
-    domain: ratelimit
-    descriptors:
-      - key: PATH
-        rate_limit:
-          unit: minute
-          requests_per_unit: 10
----
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
-  name: filter-ratelimit
+  name: ingress-ratelimit
   namespace: istio-system
 spec:
   workloadSelector:
@@ -33,48 +17,36 @@ spec:
         listener:
           filterChain:
             filter:
-              name: "envoy.filters.network.http_connection_manager"
+              name: 'envoy.filters.network.http_connection_manager'
               subFilter:
-                name: "envoy.filters.http.router"
+                name: 'envoy.filters.http.router'
       patch:
         operation: INSERT_BEFORE
         value:
-          name: envoy.filters.http.ratelimit
+          name: envoy.filters.http.local_ratelimit
           typed_config:
-            "@type": type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit
-            domain: ratelimit
-            failure_mode_deny: true
-            timeout: 10s
-            rate_limit_service:
-              grpc_service:
-                envoy_grpc:
-                  cluster_name: outbound|8081||ratelimit.default.svc.cluster.local
-                  authority: ratelimit.default.svc.cluster.local
-              transport_api_version: V3
----
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  name: filter-ratelimit-svc
-  namespace: istio-system
-spec:
-  workloadSelector:
-    labels:
-      istio: ingressgateway
-  configPatches:
-    - applyTo: VIRTUAL_HOST
-      match:
-        context: GATEWAY
-        routeConfiguration:
-          vhost:
-            name: ""
-            route:
-              action: ANY
-      patch:
-        operation: MERGE
-        value:
-          rate_limits:
-            - actions:
-              - request_headers:
-                  header_name: ":path"
-                  descriptor_key: "PATH"
+            '@type': type.googleapis.com/udpa.type.v1.TypedStruct
+            type_url: type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit
+            value:
+              stat_prefix: http_local_rate_limiter
+              token_bucket:
+                max_tokens: 50
+                tokens_per_fill: 10
+                fill_interval: 120s
+              filter_enabled:
+                runtime_key: local_rate_limit_enabled
+                default_value:
+                  numerator: 100
+                  denominator: HUNDRED
+              filter_enforced:
+                runtime_key: local_rate_limit_enforced
+                default_value:
+                  numerator: 100
+                  denominator: HUNDRED
+              response_headers_to_add:
+                - append_action: APPEND_IF_EXISTS_OR_ADD
+                  header:
+                    key: x-rate-limited
+                    value: TOO_MANY_REQUESTS
+              status:
+                code: BadRequest
