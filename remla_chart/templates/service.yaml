@@ -9,7 +9,8 @@ spec:
   selector:
     app: web
   ports:
-    - port: {{.Values.web.port}}
+    - name: http-web
+      port: {{.Values.web.port}}
       targetPort: {{.Values.web.targetPort}}
 ---
 apiVersion: v1
@@ -22,5 +23,6 @@ spec:
   selector:
     app: app
   ports:
-    - port: {{.Values.app.port}}
+    - name: http-app
+      port: {{.Values.app.port}}
       targetPort: {{.Values.app.targetPort}}
