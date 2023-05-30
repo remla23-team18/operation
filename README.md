@@ -144,6 +144,8 @@ kubectl apply -f istio_addon/.
 helm install remla remla_chart/
 
 kubectl apply -f istio-basic.yml
+
+kubectl apply -f istio-ratelimit.yml
 ```
 
 You can run `istioctl analyze` to check if there is any problem with the configuration.
