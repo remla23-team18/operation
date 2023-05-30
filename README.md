@@ -176,4 +176,4 @@ sum by (version) (text_length_bucket)
     ├── model-service                     # Flask service to serve the model
     ├── lib                               # Library that the frontend app depends on. Currently no functionality.
     ├── app                               # Frontend app that displays a UI and allows for a user to query the model-service
-    └── operation                         # Orchestration code to run the app and service, currently just a docker-compose setup.
+    └── operation                         # Orchestration code to run the app and service, option to use docker compose, kubernetes, or a full helm chart.
