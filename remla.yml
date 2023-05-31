@@ -31,7 +31,8 @@ spec:
   selector:
     app: web
   ports:
-    - port: 8080
+    - name: http-web
+      port: 8080
       targetPort: 8080
 ---
 apiVersion: apps/v1
@@ -72,7 +73,8 @@ spec:
   selector:
     app: app
   ports:
-    - port: 3000
+    - name: http-app
+      port: 3000
       targetPort: 3000
 ---
 apiVersion: networking.k8s.io/v1

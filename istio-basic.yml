@@ -1,0 +1,120 @@
+
+# Traffic Management
+
+# basic: you show that you can use Istio for your deployments and you use a Gateway and a Virtual Service
+#  to make your web app accessible through the IngressGateway.
+
+# Gateway
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: my-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+---
+
+# Virtual Service
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: my-entry-service
+spec:
+  gateways:
+    - my-gateway
+  hosts:
+  - "*"
+  http:
+  - match:
+    - uri:
+        prefix: /app
+    route:
+      - destination:
+          host: app-serv
+          subset: v1
+        weight: 50
+      - destination:
+          host: app-serv
+          subset: v2
+        weight: 50
+  - match:
+    - uri:
+        prefix: /
+    route:
+      - destination:
+          host: web-serv
+          subset: v1
+        weight: 50
+      - destination:
+          host: web-serv
+          subset: v2
+        weight: 50
+
+# Good: replicate the complete example and will also use DestinationRules to
+# realize a canary release to a small fraction of the users.
+
+---
+# DestinationRules
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: app-serv-destination-rule
+spec:
+  host: app-serv
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: web-serv-destination-rule
+spec:
+  host: web-serv
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+---
+## Fix Subsequent Calls
+#apiVersion: networking.istio.io/v1alpha3
+#kind: VirtualService
+#metadata:
+#  name: web-serv
+#spec:
+#  hosts:
+#  - web-serv
+#  http:
+#  - match:
+#    - sourceLabels:
+#        version: v2
+#    route:
+#    - destination:
+#        host: web-serv
+#        subset: v2
+#  - route:
+#    - destination:
+#        host: web-serv
+#        subset: v1
+
+# Excellent groups will extend the example and stablize the subset of requests, that are redirected to the
+# new service, i.e., once selected, I would only see the new version. If not, I would only see the old version.
+# This could be achieved by setting header information, such as flags or user tokens.
+
+
+
