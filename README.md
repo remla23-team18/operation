@@ -157,8 +157,6 @@ kubectl apply -f istio-ratelimit.yml
 ```
 Rate limiting in Istio is implemented using an Envoy filter.The Envoy proxy provides built-in rate limiting filters that can be configured to enforce rate limits on incoming requests. The rate limiting filters are applied to the istio-ingressgateway workload, and enable fine-grained control over request rates, ensuring fair resource allocation, preventing abuse, and protecting the service mesh from disruptions caused by excessive traffic, thereby improving system availability and providing a fair and reliable experience for all users. A limit of 10 requests every 2 minutes has been implemented.
 
-The diagram below shows how the Envoy filter is used to implement rate limiting.
-![istio_rl](/istio_ratelimiting.png)
 
 Access the Prometheus and Kiali page:
 ```bash
