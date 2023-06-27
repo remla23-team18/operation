@@ -32,28 +32,25 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-depl-v1
+  name: app-depl
   labels:
     app: app
-    version: v1
 spec:
   replicas: {{.Values.app.replicas}}
   selector:
     matchLabels:
       app: app
-      version: v1
   template:
     metadata:
       labels:
         app: app
-        version: v1
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "8080"
     spec:
       containers:
       - name: app
-        image: ghcr.io/remla23-team18/app:{{.Values.app.version1}}
+        image: ghcr.io/remla23-team18/app:{{.Values.app.version}}
         ports:
         - containerPort: {{.Values.app.port}}
         env:
@@ -93,38 +90,3 @@ spec:
         image: ghcr.io/remla23-team18/model-service:{{.Values.web.version2}}
         ports:
         - containerPort: {{.Values.web.port}}
----
-# Deployment for v2 of app
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: app-depl-v2
-  labels:
-    app: app
-    version: v2
-spec:
-  replicas: {{.Values.app.replicas}}
-  selector:
-    matchLabels:
-      app: app
-      version: v2
-  template:
-    metadata:
-      labels:
-        app: app
-        version: v2
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "8080"
-    spec:
-      containers:
-      - name: app
-        image: ghcr.io/remla23-team18/app:{{.Values.app.version2}}
-        ports:
-        - containerPort: {{.Values.app.port}}
-        env:
-          - name: REACT_APP_MODEL_SERVICE_URL
-            valueFrom:
-              configMapKeyRef:
-                name: config
-                key: server.host
