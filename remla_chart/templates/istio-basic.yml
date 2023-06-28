@@ -1,9 +1,6 @@
 
 # Traffic Management
 
-# basic: you show that you can use Istio for your deployments and you use a Gateway and a Virtual Service
-#  to make your web app accessible through the IngressGateway.
-
 # Gateway
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -38,12 +35,6 @@ spec:
     route:
       - destination:
           host: app-serv
-          subset: v1
-        weight: 50
-      - destination:
-          host: app-serv
-          subset: v2
-        weight: 50
   - match:
     - uri:
         prefix: /
