@@ -42,11 +42,11 @@ spec:
       - destination:
           host: web-serv
           subset: v1
-        weight: 50
+        weight: 90
       - destination:
           host: web-serv
           subset: v2
-        weight: 50
+        weight: 10
 
 # Good: replicate the complete example and will also use DestinationRules to
 # realize a canary release to a small fraction of the users.
