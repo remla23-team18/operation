@@ -36,11 +36,11 @@ You can run `istioctl analyze` to check if there is any problem with the configu
 In the current version, we have one version of `app` and two versions of `model-service`.
 
 
-Access the Prometheus and Kiali page:
+Access the Prometheus and Grafana page:
 ```bash
 istioctl dashboard prometheus
 
-istioctl dashboard kiali
+istioctl dashboard grafana
 ```
 
 In the prometheus page, you should be able to query the app-specific metrics, and use PromQL to aggregate and filter the metrics.
